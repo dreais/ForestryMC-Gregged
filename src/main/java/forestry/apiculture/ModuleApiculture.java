@@ -155,7 +155,8 @@ public class ModuleApiculture extends BlankForestryModule {
 
 	public static String beekeepingMode = "NORMAL";
 
-	public static int ticksPerBeeWorkCycle = 550;
+	// Previous value was 550 (~27 IRL seconds) - way too high. It's better IMO to scale down the production (or up) rather than have a very long tick rate and an enormous output at once
+	public static int ticksPerBeeWorkCycle = 40;
 
 	public static boolean hivesDamageOnPeaceful = false;
 
@@ -287,7 +288,8 @@ public class ModuleApiculture extends BlankForestryModule {
 		String[] blacklist = config.getStringListLocalized("species", "blacklist", Constants.EMPTY_STRINGS);
 		parseBeeBlacklist(blacklist);
 
-		ticksPerBeeWorkCycle = config.getIntLocalized("beekeeping", "ticks.work", 550, 250, 850);
+		// Honestly I'm not sure the min/max values from this function do anything
+		ticksPerBeeWorkCycle = config.getIntLocalized("beekeeping", "ticks.work", ticksPerBeeWorkCycle, ticksPerBeeWorkCycle, ticksPerBeeWorkCycle);
 
 		hivesDamageOnPeaceful = config.getBooleanLocalized("beekeeping.hivedamage", "peaceful", hivesDamageOnPeaceful);
 
