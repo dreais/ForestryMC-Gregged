@@ -58,7 +58,7 @@ public class BeeHousingModifier implements IBeeModifier {
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
 			count++;
 			modifierValue *= modifier.getProductionModifier(genome, modifierValue * currentModifier);
-			if (count = 4) {
+			if (count == 4) {
 				break;
 			}
 		}
