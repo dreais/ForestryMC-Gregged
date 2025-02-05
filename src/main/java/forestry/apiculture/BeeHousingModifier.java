@@ -53,8 +53,14 @@ public class BeeHousingModifier implements IBeeModifier {
 	@Override
 	public float getProductionModifier(IBeeGenome genome, final float currentModifier) {
 		float modifierValue = 1.0f;
+		int count = 0;
+
 		for (IBeeModifier modifier : beeHousing.getBeeModifiers()) {
+			count++;
 			modifierValue *= modifier.getProductionModifier(genome, modifierValue * currentModifier);
+			if (count = 4) {
+				break;
+			}
 		}
 		return modifierValue;
 	}
