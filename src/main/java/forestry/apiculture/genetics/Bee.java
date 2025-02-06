@@ -475,14 +475,14 @@ public class Bee extends IndividualLiving implements IBee {
 		IAlleleBeeSpecies secondary = genome.getSecondary();
 
 		IBeeModifier beeHousingModifier = BeeManager.beeRoot.createBeeHousingModifier(housing);
-		IBeeModifier beeModeModifier = mode.getBeeModifier();
 
 		// Old formula is this: Bee genetic speed * beehousing * beekeeping mode
-		// Goal is to have one that follows a better progression if we consider a maximum of 4 frames (TODO: implement frames cap)
+		// Goal is to have one that follows a better progression if we consider a maximum of 4 frames
 		float prodHousing = beeHousingModifier.getProductionModifier(genome, 1.0f);
 		float speedBee = genome.getSpeed();
 
-		// Taking inspiration from GTNH, though we skip the ProductChance ^ 0.52
+		// Taking inspiration from GTNH, though we skip the ProductChance ^ 0.52 from their formula
+		// https://gtnh.miraheze.org/wiki/Bees
 		float chance = (float)Math.pow(prodHousing, 0.52f) * (float)Math.pow(speedBee, 0.37f);
 		float lineChance = 0.0f;
 
@@ -500,20 +500,13 @@ public class Bee extends IndividualLiving implements IBee {
 			}
 		}
 
-		// This entire block is rendered useless as Primary is considered the whole 1st line in JEI. We can skip this as this would double the yield. Keeping it as I might reuse it later
-		
-		// // / Secondary Products
-		// for (Map.Entry<ItemStack, Float> entry : secondary.getProductChances().entrySet()) {
-		// 	float productChance = entry.getValue();
-		// 	lineChance = chance * productChance;
-		// 	while (lineChance > 1.0f) {
-		// 		products.add(entry.getKey().copy());
-		// 		lineChance--;
-		// 	}
-		// 	if (world.rand.nextFloat() < lineChance) {
-		// 		products.add(entry.getKey().copy());
-		// 	}
-		// }
+		/*
+		Correction from last commit: This block is for the second genome's produce. However in practice, the first row can drop from the "Primary Products"
+		Also, relying on a non pure-breed bee is more of a pain (for the player) than anything, so this can be safely ignored in my opinion
+
+		 // Secondary Products
+		 for (Map.Entry<ItemStack, Float> entry : secondary.getProductChances().entrySet()) {}
+		 */
 
 		// / Specialty products
 		if (primary.isJubilant(genome, housing) && secondary.isJubilant(genome, housing)) {
