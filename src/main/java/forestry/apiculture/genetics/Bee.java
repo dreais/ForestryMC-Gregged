@@ -470,6 +470,8 @@ public class Bee extends IndividualLiving implements IBee {
 		IBeekeepingMode mode = BeeManager.beeRoot.getBeekeepingMode(world);
 
 		NonNullList<ItemStack> products = NonNullList.create();
+		ItemStack singleProduct;
+		int productCount;
 
 		IAlleleBeeSpecies primary = genome.getPrimary();
 		IAlleleBeeSpecies secondary = genome.getSecondary();
@@ -484,20 +486,20 @@ public class Bee extends IndividualLiving implements IBee {
 		// Taking inspiration from GTNH, though we skip the ProductChance ^ 0.52 from their formula
 		// https://gtnh.miraheze.org/wiki/Bees
 		float chance = (float)Math.pow(prodHousing, 0.52f) * (float)Math.pow(speedBee, 0.37f);
-		float lineChance = 0.0f;
+		float lineChance;
 
 		// The idea of the 2 blocks below are to allow more than 1 output for the same Product. If you have a total chance of 350%, this should be 3 guaranteed of this product + 50% chance of a 4th one
 		// / Primary Products
 		for (Map.Entry<ItemStack, Float> entry : primary.getProductChances().entrySet()) {
 			float productChance = entry.getValue();
 			lineChance = chance * productChance;
-			while (lineChance > 1.0f) {
-				products.add(entry.getKey().copy());
-				lineChance--;
+			productCount = (int) lineChance;
+			if (world.rand.nextFloat() < (lineChance - (float) productCount)) {
+				productCount++;
 			}
-			if (world.rand.nextFloat() < lineChance) {
-				products.add(entry.getKey().copy());
-			}
+			singleProduct = entry.getKey().copy();
+			singleProduct.setCount(productCount);
+			products.add(singleProduct);
 		}
 
 		/*
@@ -513,13 +515,13 @@ public class Bee extends IndividualLiving implements IBee {
 			for (Map.Entry<ItemStack, Float> entry : primary.getSpecialtyChances().entrySet()) {
 				float productChance = entry.getValue();
 				lineChance = chance * productChance;
-				while (lineChance > 1.0f) {
-					products.add(entry.getKey().copy());
-					lineChance--;
+				productCount = (int) lineChance;
+				if (world.rand.nextFloat() < (lineChance - (float) productCount)) {
+					productCount++;
 				}
-				if (world.rand.nextFloat() < lineChance) {
-					products.add(entry.getKey().copy());
-				}
+				singleProduct = entry.getKey().copy();
+				singleProduct.setCount(productCount);
+				products.add(singleProduct);
 			}
 		}
 
